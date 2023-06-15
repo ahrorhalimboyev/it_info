@@ -1,0 +1,7 @@
+{
+  "port": 3000,
+  "dbUri": "mongodb://127.0.0.1:27017/it_info",
+  "atlasUri": "mongodb+srv://atlasAdmin:aHror9302@cluster0.wesltdx.mongodb.net/mydb?retryWrites=true&w=majority",
+  "serverUri": "https://143.12.12.07:12345/it_info",
+  "secret": "MyVerySecretKey"
+}
