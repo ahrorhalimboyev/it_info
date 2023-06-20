@@ -3,5 +3,15 @@
   "dbUri": "mongodb://127.0.0.1:27017/it_info",
   "atlasUri": "mongodb+srv://atlasAdmin:aHror9302@cluster0.wesltdx.mongodb.net/mydb?retryWrites=true&w=majority",
   "serverUri": "https://143.12.12.07:12345/it_info",
-  "secret": "MyVerySecretKey"
+  "secret": "MyVerySecretKey",
+  "access_key": "BuAccessUchunMahfiyKalit",
+  "refresh_key": "BuRefreshUchunMahfiyKalit",
+  "access_time": "25s",
+  "refresh_time": "30d",
+  "refresh_ms": 2592000000,
+  "smtp_host": "smtp.gmail.com",
+  "smtp_port": 587,
+  "smtp_user": "halimboyevahror8888@gmail.com",
+  "smtp_password": "kuylmipncwncervc",
+  "api_url": "http://localhost:3000"
 }

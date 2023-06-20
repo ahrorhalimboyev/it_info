@@ -5,12 +5,15 @@ const {
   updateAdmin,
   loginAdmin,
   deleteAdmin,
+  logoutAdmin,
 } = require("../controllers/admin.controller");
 const router = Router();
 const adminRolesPolice = require("../middleware/adminRolesPolice");
+const adminPolice = require("../middleware/adminPolice");
+const Validator = require("../middleware/validator");
 
-router.post("/", addAdmin);
-router.get("/", getAllAdmins);
+router.post("/", Validator("admin"), addAdmin);
+router.get("/", adminPolice, getAllAdmins);
 router.put(
   "/:id",
   adminRolesPolice(["READ", "WRITE", "CHANGE", "DELETE"]),
@@ -22,5 +25,6 @@ router.delete(
   adminRolesPolice(["READ", "WRITE", "CHANGE", "DELETE"]),
   deleteAdmin
 );
+router.post("/logout", logoutAdmin);
 
 module.exports = router;

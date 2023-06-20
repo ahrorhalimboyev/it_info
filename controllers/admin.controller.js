@@ -17,35 +17,35 @@ const generateAccessToken = (admin_is_active, admin_is_creator, adminRoles) => {
 };
 
 exports.addAdmin = async (req, res) => {
-  try {
-    const { error, value } = adminValidation(req.body);
-    if (error) {
-      return res.status(400).send({ message: error.details[0].message });
-    }
-    const {
-      admin_name,
-      admin_email,
-      admin_password,
-      admin_is_active,
-      admin_is_ceator,
-    } = value;
-    const admin = await Admin.findOne({ admin_email });
-    if (admin) {
-      return res.status(400).send({ message: "Admin exists" });
-    }
-    const hashedPassword = await bcrypt.hash(admin_password, 9);
-    const newAdmin = await Admin({
-      admin_name,
-      admin_email,
-      admin_password: hashedPassword,
-      admin_is_active,
-      admin_is_ceator,
-    });
-    await newAdmin.save();
-    res.status(200).send({ message: "Admin added" });
-  } catch (error) {
-    errorHandler(res, error);
+  // try {
+  //   const { error, value } = adminValidation(req.body);
+  //   if (error) {
+  //     return res.status(400).send({ message: error.details[0].message });
+  //   }
+  const {
+    admin_name,
+    admin_email,
+    admin_password,
+    admin_is_active,
+    admin_is_ceator,
+  } = req.body;
+  const admin = await Admin.findOne({ admin_email });
+  if (admin) {
+    return res.status(400).send({ message: "Admin exists" });
   }
+  const hashedPassword = await bcrypt.hash(admin_password, 9);
+  const newAdmin = await Admin({
+    admin_name,
+    admin_email,
+    admin_password: hashedPassword,
+    admin_is_active,
+    admin_is_ceator,
+  });
+  await newAdmin.save();
+  res.status(200).send({ message: "Admin added" });
+  // } catch (error) {
+  //   errorHandler(res, error);
+  // }
 };
 
 exports.getAllAdmins = async (req, res) => {
@@ -61,39 +61,39 @@ exports.getAllAdmins = async (req, res) => {
 };
 
 exports.updateAdmin = async (req, res) => {
-  try {
-    const { error, value } = adminValidation(req.body);
-    if (error) {
-      return res.status(400).send({ message: error.details[0].message });
+  // try {
+  //   const { error, value } = adminValidation(req.body);
+  //   if (error) {
+  //     return res.status(400).send({ message: error.details[0].message });
+  //   }
+  const {
+    admin_name,
+    admin_email,
+    admin_password,
+    admin_is_active,
+    admin_is_creator,
+  } = req.body;
+  const hashedPassword = await bcrypt.hash(admin_password, 8);
+  const updatedAdmin = await Admin.updateOne(
+    { _id: req.params.id },
+    {
+      $set: {
+        admin_name,
+        admin_email,
+        admin_password: hashedPassword,
+        admin_is_active,
+        admin_is_creator,
+      },
     }
-    const {
-      admin_name,
-      admin_email,
-      admin_password,
-      admin_is_active,
-      admin_is_creator,
-    } = value;
-    const hashedPassword = await bcrypt.hash(admin_password, 8);
-    const updatedAdmin = await Admin.updateOne(
-      { _id: req.params.id },
-      {
-        $set: {
-          admin_name,
-          admin_email,
-          admin_password: hashedPassword,
-          admin_is_active,
-          admin_is_creator,
-        },
-      }
-    );
-    if (updatedAdmin.acknowledged) {
-      res.status(200).send({ message: "Admin updated" });
-    } else {
-      res.status(400).send({ message: "Admin is not updated" });
-    }
-  } catch (error) {
-    errorHandler(res, error);
+  );
+  if (updatedAdmin.acknowledged) {
+    res.status(200).send({ message: "Admin updated" });
+  } else {
+    res.status(400).send({ message: "Admin is not updated" });
   }
+  // } catch (error) {
+  //   errorHandler(res, error);
+  // }
 };
 
 exports.loginAdmin = async (req, res) => {
@@ -140,4 +140,20 @@ exports.deleteAdmin = async (req, res) => {
   } catch (error) {
     errorHandler(res, error);
   }
+};
+
+exports.logoutAdmin = async (req, res) => {
+  const { refreshToken } = req.cookies;
+  let admin;
+  if (!refreshToken)
+    return res.status(400).send({ message: "Token is not found" });
+  admin = await Admin.findOneAndUpdate(
+    { admin_token: refreshToken },
+    { admin_token: "" },
+    { new: true }
+  );
+  if (!admin) return res.status(400).send({ message: "Token is not found" });
+
+  res.clearCookie("refreshToken");
+  res.status(200).send({ admin });
 };

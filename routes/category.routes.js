@@ -9,6 +9,7 @@ const {
   getCategoryByName,
 } = require("../controllers/category.controller");
 const adminRolesPolice = require("../middleware/adminRolesPolice");
+const Validator = require("../middleware/validator");
 
 router.get("/", getAllCatergories);
 router.get("/:id", getCategoryById);
